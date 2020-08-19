@@ -4,6 +4,9 @@ const printer = require('pdf-to-printer');
 const fetch = require('node-fetch');
 
 function print(request, response) {
+  console.log(
+    `filename: ${request.query.filename}, printer: ${request.query.printer}`
+  );
   function onSuccess() {
     console.log('printed successfully!');
     response.send({ status: 'completed' });
@@ -14,20 +17,15 @@ function print(request, response) {
     response.send({ status: 'error', error });
   }
 
-  console.log('fetching from URL...');
-
-  fetch(request.query.url)
-    .then((res) => res.buffer())
-    .then((buffer) => {
-      //const pdf = 'TestDocument.pdf'; // to print from local file system. delete the fetch code and substitute the const pdf with this line of code
-      const pdf = save(buffer);
-      console.log('printing pdf file...');
-      printer
-        .print(pdf)
-        .then(onSuccess)
-        .catch(onError)
-        .finally(() => remove(pdf));
-    });
+  const pdf = request.query.filename;
+  // const pdf = save(buffer);
+  const options = {
+    printer: request.query.printer,
+    win32: ['-print-settings "fit"'],
+  };
+  console.log('printing pdf file...');
+  printer.print(pdf, options).then(onSuccess).catch(onError);
+  // .finally(() => remove(pdf));
 }
 
 function save(buffer) {
