@@ -19,8 +19,8 @@ function print(request, response) {
   fetch(request.query.url)
     .then((res) => res.buffer())
     .then((buffer) => {
-      const pdf = 'TestDocument.pdf'; // to print from local file system. delete the fetch code and substitute the const pdf with this line of code
-      // const pdf = save(buffer);
+      //const pdf = 'TestDocument.pdf'; // to print from local file system. delete the fetch code and substitute the const pdf with this line of code
+      const pdf = save(buffer);
       console.log('printing pdf file...');
       printer
         .print(pdf)
